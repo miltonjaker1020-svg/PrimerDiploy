@@ -136,5 +136,3 @@ Las pruebas rápidas presentes cubren permisos de rutas, destinos internos del l
 - **Cookies en producción remota:** utilizar HTTPS.
 - **Docker no conecta al daemon:** iniciar Docker Engine/Desktop. Revisar `docker context ls`; si se utiliza Engine y la CLI apunta a un Desktop apagado, seleccionar `docker context use default`.
 - **Puerto 3000 ocupado:** usar `npm run dev -- --port 3001` o cambiar el puerto publicado en Compose.
-
-Explicación de negocio para sustentar: [docs/sustentacion-negocio.md](docs/sustentacion-negocio.md).
