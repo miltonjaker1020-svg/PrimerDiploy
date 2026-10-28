@@ -18,7 +18,7 @@ export async function proxy(request: NextRequest) {
   }
   if (!canAccessPath(request.nextUrl.pathname, session.role)) return NextResponse.redirect(new URL("/dashboard", request.url));
 
-  // Forward the renewed cookie to Server Components during this same request.
+
   if (newToken) request.cookies.set("access_token", newToken);
   const headers = new Headers(request.headers);
   headers.set("cookie", request.cookies.toString());

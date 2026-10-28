@@ -10,7 +10,7 @@ export default function ExpirationLabel({ date }: { date: string }) {
       const expires = new Date(date);
       const now = new Date();
       if (expires <= now) { setDays(-1); return; }
-      // Compare local calendar days, using UTC only to avoid daylight-saving day lengths.
+
       const expiryDay = Date.UTC(expires.getFullYear(), expires.getMonth(), expires.getDate());
       const today = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
       setDays(Math.round((expiryDay - today) / 86400000));
