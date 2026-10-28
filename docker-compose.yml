@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+      target: runner
+    ports:
+      - "3000:3000"
+    env_file: .env
+    restart: unless-stopped
+  tools:
+    build:
+      context: .
+      target: tools
+    env_file: .env
+    profiles: ["tools"]

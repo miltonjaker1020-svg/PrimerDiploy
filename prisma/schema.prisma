@@ -1,0 +1,120 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  DONANTE
+  BENEFICIARIO
+  ADMINISTRADOR
+}
+
+enum DonationStatus {
+  PENDIENTE
+  APROBADA
+  RECHAZADA
+  CANCELADA
+}
+
+enum RequestStatus {
+  PENDIENTE
+  ENTREGADA
+  CANCELADA
+  RECHAZADA
+}
+
+model User {
+  id               String   @id @default(uuid())
+  email            String   @unique
+  password         String
+  role             Role
+  refreshTokenHash String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  donations Donation[]
+  requests  Request[]
+
+  @@map("users")
+}
+
+model Catalog {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products    Product[]
+
+  @@map("catalogs")
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  catalogId   String
+  catalog     Catalog  @relation(fields: [catalogId], references: [id])
+  name        String
+  description String?
+  unit        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  donations   Donation[]
+  requests    Request[]
+
+  @@map("products")
+}
+
+model Donation {
+  id              String         @id @default(uuid())
+  donorId         String
+  donor           User           @relation(fields: [donorId], references: [id])
+  productId       String
+  product         Product        @relation(fields: [productId], references: [id])
+  quantity        Int
+  expirationDate  DateTime
+  status          DonationStatus @default(PENDIENTE)
+  rejectionReason String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  requestDonations RequestDonation[]
+
+  @@map("donations")
+}
+
+model Request {
+  id              String        @id @default(uuid())
+  beneficiaryId   String
+  beneficiary     User          @relation(fields: [beneficiaryId], references: [id])
+  productId       String
+  product         Product       @relation(fields: [productId], references: [id])
+  quantity        Int
+  status          RequestStatus @default(PENDIENTE)
+  rejectionReason String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  requestDonations RequestDonation[]
+
+  @@map("requests")
+}
+
+model RequestDonation {
+  id         String   @id @default(uuid())
+  requestId  String
+  request    Request  @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  donationId String
+  donation   Donation @relation(fields: [donationId], references: [id], onDelete: Cascade)
+  quantity   Int
+  createdAt  DateTime @default(now())
+
+  @@map("request_donations")
+}
